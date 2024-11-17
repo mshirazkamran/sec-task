@@ -4,20 +4,22 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.service.annotation.DeleteExchange;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.stereotype.Controller;
 
 
 
-@RestController
-@RequestMapping("api/v1")
+@Controller
+@RequestMapping
 public class CarController {
 
     private final CarService carService;
@@ -27,14 +29,16 @@ public class CarController {
         this.carService = carService;
     }
     
-    @GetMapping("/car")
-    public ResponseEntity<Car> getCar(@RequestParam int id) {
-        return ResponseEntity.ok(carService.getCar(id));
+    @GetMapping("/car/{id}")
+    @ResponseBody
+    public Car getCar(@PathVariable int id) {
+        return carService.getCar(id);
     }
 
     @GetMapping("/all-cars")
-    public ResponseEntity<List<Car>> getAllCars() {
-        return ResponseEntity.ok(carService.getAllCars());
+    @ResponseBody
+    public List<Car> getAllCars() {
+        return carService.getAllCars();
     }
 
     // @GetMapping("/lol")
@@ -43,19 +47,28 @@ public class CarController {
     //     return "helllo grpm shiraz";
     // }
 
+    @GetMapping("/car")
+    public String carRegistration() {
+        return "addCar";
+    }
+
     @PostMapping("/car")
-    public void createCar(@RequestBody Car car) {
+    public String createCar(@ModelAttribute Car car) {
         carService.saveCar(car);
+
+        return "addedCar";
     }
 
     @DeleteMapping("/car")
-    public void deleteCar(@RequestParam int id) {
+    public String deleteCar(@RequestParam int id) {
         carService.deleteCar(id);
+        return "deletedCar";
     }
 
     @PutMapping("/car")
-    public void updateCar(@RequestBody Car car) {
+    public String updateCar(@RequestBody Car car) {
         carService.updateCar(car);
+        return "updatedCar";
     }
     
 }
